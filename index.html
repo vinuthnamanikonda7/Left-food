@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeftOverGo</title>
+<style>
+body {font-family: Arial, sans-serif; background:#f5f5f5; margin:0;}/* NAVBAR */ .nav {display:flex; justify-content:space-between; align-items:center; padding:15px 40px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.05);} .nav .logo {font-weight:bold; font-size:20px;} .nav .logo span {color:orange;} .nav .menu a {margin:0 10px; text-decoration:none; color:#555;} .nav .user {color:orange; font-weight:bold;}
+
+/* PAGES */ .page {display:none; padding:40px;} .active-page {display:block;}
+
+.cards {display:flex; gap:20px; flex-wrap:wrap; margin-top:20px;} .card {background:#fff; padding:20px; border-radius:15px; width:280px; box-shadow:0 10px 20px rgba(0,0,0,0.08);}
+
+.btn {width:100%; padding:12px; border:none; border-radius:25px; background:linear-gradient(90deg, orange, darkorange); color:white; cursor:pointer;}
+
+.add-card {display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; border:2px dashed #ddd;} .add-card .plus {background:orange; color:#fff; width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px;}
+
+/* MODAL */ .overlay {position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); display:none; justify-content:center; align-items:center;} .modal {background:#fff; padding:25px; border-radius:15px; width:320px;} .modal input, .modal textarea {width:100%; padding:10px; margin:10px 0; border-radius:10px; border:1px solid #ddd;} .close {float:right; cursor:pointer;}
+
+</style>
+</head>
+<body><!-- NAVBAR (ONLY AFTER LOGIN) --><div class="nav" id="navbar" style="display:none;">
+  <div class="logo">LEFTOVER<span>GO</span></div>
+  <div class="menu">
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('about')">About</a>
+    <a href="#" onclick="showPage('impact')">Impact</a>
+    <a href="#" onclick="showPage('contact')">Contact</a>
+  </div>
+  <div>
+    <span class="user" id="roleText"></span>
+    <button onclick="logout()">Logout</button>
+  </div>
+</div><!-- LOGIN PAGE --><div id="loginPage" class="page active-page">
+  <h2 style="text-align:center;">Login</h2>
+  <div style="text-align:center; margin-top:20px;">
+    <button onclick="login('donor')">Login as Donor</button>
+    <button onclick="login('receiver')">Login as Receiver</button>
+    <button onclick="login('delivery')">Login as Delivery</button>
+  </div>
+</div><!-- HOME PAGE --><div id="home" class="page">
+  <h2>Welcome, vinnu</h2>
+  <div id="donorView">
+    <div class="cards">
+      <div class="card add-card" onclick="openModal()">
+        <div class="plus">+</div>
+        <h3>Post Surplus</h3>
+      </div>
+    </div>
+  </div>  <div id="receiverView">
+    <h3>Available Food</h3>
+    <div class="cards">
+      <div class="card">
+        <h4>Veg Thali</h4>
+        <button class="btn">Claim</button>
+      </div>
+    </div>
+  </div>  <div id="deliveryView">
+    <h3>Delivery Tasks</h3>
+    <div class="cards">
+      <div class="card">
+        <h4>Pickup & Deliver Food</h4>
+        <button class="btn">Accept Task</button>
+      </div>
+    </div>
+  </div>
+</div><!-- OTHER PAGES --><div id="about" class="page"><h2>About Us</h2></div>
+<div id="impact" class="page"><h2>Impact</h2></div>
+<div id="contact" class="page"><h2>Contact</h2></div><!-- MODAL --><div class="overlay" id="modal">
+  <div class="modal">
+    <span class="close" onclick="closeModal()">✖</span>
+    <h3>POST SURPLUS</h3>
+    <input placeholder="Food Title">
+    <button class="btn">Submit</button>
+  </div>
+</div><script>
+function login(role){
+  localStorage.setItem('role', role);
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('navbar').style.display='flex';
+  showPage('home');
+  setRoleUI(role);
+}
+
+function logout(){
+  localStorage.removeItem('role');
+  location.reload();
+}
+
+function setRoleUI(role){
+  document.getElementById('roleText').innerText = 'VINNU : ' + role.toUpperCase();
+  document.getElementById('donorView').style.display = role==='donor' ? 'block':'none';
+  document.getElementById('receiverView').style.display = role==='receiver' ? 'block':'none';
+  document.getElementById('deliveryView').style.display = role==='delivery' ? 'block':'none';
+}
+
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
+  document.getElementById(page).classList.add('active-page');
+}
+
+function openModal(){document.getElementById('modal').style.display='flex';}
+function closeModal(){document.getElementById('modal').style.display='none';}
+
+// Auto login if role exists
+const role = localStorage.getItem('role');
+if(role){ login(role); }
+</script></body>
+</html>
